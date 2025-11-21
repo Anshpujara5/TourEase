@@ -120,6 +120,15 @@ Our mission is to make travel **personalized**, **safe**, and **immersive** for 
 ### Installation
 
 1. **Clone the repository**
+
+ 
+   git clone https://github.com/yourusername/tourease.git
+   cd tourease
+   
+
+2. **Install dependencies**
+ 
+=======
   
    git clone https://github.com/yourusername/tourease.git
    cd tourease
@@ -127,6 +136,7 @@ Our mission is to make travel **personalized**, **safe**, and **immersive** for 
 
 2. **Install dependencies**
   
+
    # Install backend dependencies
    cd backend
    npm install
@@ -141,22 +151,22 @@ Our mission is to make travel **personalized**, **safe**, and **immersive** for 
    Create `.env` files in both `backend` and `frontend` directories:
    
    **Backend `.env`:**
-   ```env
+   
    PORT=5000
    MONGODB_URI=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret
    OPENAI_API_KEY=your_openai_api_key
    MAPBOX_ACCESS_TOKEN=your_mapbox_token
-   ```
+   
    
    **Frontend `.env`:**
-   ```env
+  
    REACT_APP_API_URL=http://localhost:5000
    REACT_APP_MAPBOX_TOKEN=your_mapbox_token
-   ```
+  
 
 4. **Run the application**
-   ```bash
+  
    # Start backend server
    cd backend
    npm start
@@ -164,7 +174,7 @@ Our mission is to make travel **personalized**, **safe**, and **immersive** for 
    # In a new terminal, start frontend
    cd frontend
    npm start
-   ```
+   
 
 5. **Access the application**
    
@@ -219,7 +229,13 @@ Check out our [Issues](https://github.com/yourusername/tourease/issues) page to 
 ---
 
 
+## Setup
+Please follow [SETUP.md](SETUP.md) to set up the project locally.
+
+=======
+
 [![License: MIT](https://img.shields.io/github/license/Suhani1234-5/TourEase)](https://opensource.org/licenses/MIT)
+
 
 ## Code of Conduct
 Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details on expected behavior and reporting guidelines.
