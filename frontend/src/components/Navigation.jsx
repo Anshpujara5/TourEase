@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, Sun, Moon } from 'lucide-react';
 import { useFavorites } from '../hooks/useFavorites';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [theme, setTheme] = useState('light');
+
   const location = useLocation();
   const navigate = useNavigate();
   const { favoriteIds } = useFavorites();
@@ -13,32 +15,62 @@ export default function Navigation() {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/destinations', label: 'Explore' },
-    { path: '/contact', label: 'Contact' }
+    { path: '/contact', label: 'Contact' },
   ];
 
   const isActive = (path) => location.pathname === path;
 
-  // Logo Click Handler → Redirect + Scroll to Top
+  // Logo click → home + scroll top
   const handleLogoClick = () => {
-    navigate("/");
-    window.scrollTo(0, 0);
+    navigate('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  /* ---------------- THEME LOGIC ---------------- */
+
+  
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
+  }, []);
+
+  // Apply theme to html
+  const applyTheme = (mode) => {
+    if (mode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', mode);
+  };
+
+  // Toggle theme
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    applyTheme(newTheme);
+  };
+
+  /* ------------------------------------------------ */
+
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 shadow-sm dark:shadow-md z-50 border-b border-transparent dark:border-gray-800">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Updated Logo (click to go home + scroll top) */}
+        <div className="flex h-16 items-center justify-between">
+
+          {/* LOGO */}
           <span
             onClick={handleLogoClick}
-            className="flex items-center cursor-pointer"
+            className="cursor-pointer text-2xl font-bold bg-gradient-to-r from-teal-500 to-cyan-600 dark:from-indigo-400 dark:to-purple-500 bg-clip-text text-transparent"
           >
-            <span className="text-2xl font-bold bg-gradient-to-r from-teal-500 to-cyan-600 dark:from-indigo-400 dark:to-purple-500 bg-clip-text text-transparent">
-              TourEase
-            </span>
+            TourEase
           </span>
 
-          {/* Desktop Navigation */}
+          {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -54,50 +86,67 @@ export default function Navigation() {
               </Link>
             ))}
 
-            {/* Favorites Link */}
+            {/* Favorites */}
             <Link
               to="/favorites"
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition ${
                 isActive('/favorites')
                   ? 'bg-teal-500 dark:bg-indigo-600 text-white'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
             >
-              <span>Favorites</span>
+              <Heart className="w-5 h-5" />
+              Favorites
               {favoriteIds.length > 0 && (
-                <span className="bg-red-500 dark:bg-red-600 text-white text-xs rounded-full px-2 py-0.5 font-bold">
+                <span className="ml-1 bg-red-500 text-white text-xs px-2 rounded-full">
                   {favoriteIds.length}
                 </span>
               )}
             </Link>
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex">
+          {/* RIGHT ACTIONS */}
+          <div className="flex items-center gap-3">
+
+            {/* THEME TOGGLE */}
+            <button
+              onClick={toggleTheme}
+              className="
+                p-2 rounded-lg cursor-pointer
+                hover:bg-gray-100 dark:hover:bg-gray-800
+                transition-all duration-300 ease-in-out
+                active:scale-95
+              "
+              title="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 text-yellow-400 transition-transform duration-500 rotate-0" />
+              ) : (
+                <Moon className="w-5 h-5 text-gray-700 transition-transform duration-500" />
+              )}
+            </button>
+
+            {/* CTA */}
             <Link
               to="/signup"
-              className="bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold transition"
+              className="hidden md:inline-flex bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition"
             >
               Get Started
             </Link>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg text-gray-900 dark:text-white transition"
-          >
-            {isOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+            {/* MOBILE MENU */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+            >
+              {isOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* MOBILE MENU */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-2 bg-white dark:bg-gray-900">
+          <div className="md:hidden py-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -113,35 +162,10 @@ export default function Navigation() {
               </Link>
             ))}
 
-            {/* Mobile Favorites Link */}
-            <Link
-              to="/favorites"
-              onClick={() => setIsOpen(false)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition ${
-                isActive('/favorites')
-                  ? 'bg-teal-500 dark:bg-indigo-600 text-white'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-              }`}
-            >
-              <Heart
-                className={`w-5 h-5 ${
-                  favoriteIds.length > 0
-                    ? 'fill-red-500 text-red-500'
-                    : 'text-gray-700 dark:text-gray-300'
-                }`}
-              />
-              <span>Favorites</span>
-              {favoriteIds.length > 0 && (
-                <span className="bg-red-500 dark:bg-red-600 text-white text-xs rounded-full px-2 py-0.5 font-bold">
-                  {favoriteIds.length}
-                </span>
-              )}
-            </Link>
-
             <Link
               to="/signup"
-              className="block w-full bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold transition text-center"
               onClick={() => setIsOpen(false)}
+              className="block text-center bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition"
             >
               Get Started
             </Link>
