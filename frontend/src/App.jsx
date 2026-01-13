@@ -23,6 +23,7 @@ import ScrollToTopButton from "./components/common/ScrollToTop";
 import DestinationDetails from "./pages/DestinationDetails";
 import PlanTrip from "./pages/PlanTrip";
 import OAuthSuccess from "./pages/OAuthSuccess";
+import Privacy from "./pages/Privacy";
 import NotFound from "./components/NotFound";
 import TripPlanner from './pages/TripPlanner';
 
@@ -60,6 +61,7 @@ function AppRoutes() {
           <Route path="/features" element={<Features />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/favorites" element={<AddFavorite />} />
